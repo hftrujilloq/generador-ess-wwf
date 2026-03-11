@@ -11,7 +11,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# CSS personalizado para mejor apariencia
+# CSS personalizado
 st.markdown("""
 <style>
     .main {
@@ -39,6 +39,12 @@ st.markdown("""
         border-radius: 5px;
         border-left: 5px solid #28a745;
     }
+    .pregunta-box {
+        background-color: #f8f9fa;
+        padding: 0.5rem;
+        border-radius: 3px;
+        margin-bottom: 0.5rem;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -52,11 +58,11 @@ st.header("📋 Sección 0: Información Básica del Contrato")
 col1, col2 = st.columns(2)
 
 with col1:
-    nombre_proyecto = st.text_input("Nombre del Proyecto:", placeholder="Ej: Proyecto Bosques Andinos")
+    nombre_proyecto = st.text_input("Nombre del proyecto:", placeholder="Ej: Proyecto Bosques Andinos")
     objeto_contrato = st.text_area("Objeto resumido del contrato:", placeholder="Ej: Consultoría para diagnóstico participativo...", height=80)
 
 with col2:
-    territorio = st.text_input("Territorio(s) de ejecución:", placeholder="Ej: Municipio de San José, Vereda El Toldo")
+    territorio = st.text_input("Territorio(s) donde se ejecutará (municipio, vereda, resguardo, etc.):", placeholder="Ej: Municipio de San José, Vereda El Toldo")
     fecha = st.date_input("Fecha de generación:", datetime.now())
 
 st.markdown("---")
@@ -64,43 +70,71 @@ st.markdown("---")
 # Cuestionario
 st.header("❓ Cuestionario de Screening ESS")
 
-st.info("Responda 'SÍ' solo si aplica a su contrato. Cada 'SÍ' activará cláusulas específicas automáticamente.")
+# INSTRUCCIÓN ACTUALIZADA SEGÚN SOLICITUD
+st.info("Seleccione las opciones que aplican o que se marcarían como SÍ. Cada opción seleccionada activará cláusulas específicas automáticamente según la Matriz de Decisión ESS.")
 
-# Sección A
-st.subheader("Sección A: Sobre el Objeto del Contrato (Qué se va a hacer)")
+# Sección A - PREGUNTAS EXACTAS DEL DOCUMENTO
+st.subheader("Sección A. Preguntas sobre el objeto del contrato (Qué se va a hacer)")
+
 respuestas = {}
 
-col_a1, col_a2 = st.columns(2)
-with col_a1:
-    respuestas["A1"] = st.checkbox("A1. ¿Contacto directo con comunidades, asociaciones o autoridades territoriales?")
-    respuestas["A3"] = st.checkbox("A3. ¿Afectación potencial a acceso a recursos o medios de vida?")
-    respuestas["A5"] = st.checkbox("A5. ¿Asesoría productiva con manejo de plagas o insumos?")
-    respuestas["A7"] = st.checkbox("A7. ¿Posible coincidencia con sitios culturalmente sensibles?")
+st.markdown('<div class="pregunta-box">', unsafe_allow_html=True)
+respuestas["A1"] = st.checkbox("A1. ¿La persona contratada tendrá contacto directo con comunidades, asociaciones, consejos comunitarios, resguardos, organizaciones locales o autoridades territoriales?")
+st.markdown('</div>', unsafe_allow_html=True)
 
-with col_a2:
-    respuestas["A2"] = st.checkbox("A2. ¿Actividades en territorio (talleres, reuniones, campo)?")
-    respuestas["A4"] = st.checkbox("A4. ¿Recopilación de información sensible (datos, testimonios, audios)?")
-    respuestas["A6"] = st.checkbox("A6. ¿Riesgo de seguridad (conflicto, estigmatización, economías ilegales)?")
+st.markdown('<div class="pregunta-box">', unsafe_allow_html=True)
+respuestas["A2"] = st.checkbox("A2. ¿El contrato incluye actividades en territorio como visitas de campo, talleres, reuniones comunitarias, levantamiento participativo de información o acompañamiento local?")
+st.markdown('</div>', unsafe_allow_html=True)
 
-# Sección B
-st.subheader("Sección B: Sobre la Persona Contratada (Quién ejecuta)")
-col_b1, col_b2 = st.columns(2)
-with col_b1:
-    respuestas["B1"] = st.checkbox("B1. ¿La persona pertenece a comunidad indígena, afro o vulnerable?")
-    respuestas["B3"] = st.checkbox("B3. ¿Responsabilidades de custodia de información sensible?")
+st.markdown('<div class="pregunta-box">', unsafe_allow_html=True)
+respuestas["A3"] = st.checkbox("A3. ¿Las actividades podrían afectar, directa o indirectamente, el acceso a recursos, el uso del territorio, las prácticas productivas o los medios de vida de personas o comunidades? (Ej.: restricciones, acuerdos de uso, cambios en reglas, reconversión productiva, áreas de conservación)")
+st.markdown('</div>', unsafe_allow_html=True)
 
-with col_b2:
-    respuestas["B2"] = st.checkbox("B2. ¿Riesgos de conducta/VBG/SEA con población vulnerable?")
+st.markdown('<div class="pregunta-box">', unsafe_allow_html=True)
+respuestas["A4"] = st.checkbox("A4. ¿Se recopilará o usará información sensible, como: datos personales, testimonios, fotografías, audios o videos, cartografía social, información sobre conflictos, conocimiento tradicional?")
+st.markdown('</div>', unsafe_allow_html=True)
 
-# Sección C
-st.subheader("Sección C: Sobre los Actores Involucrados (Con quién se interactúa)")
-col_c1, col_c2, col_c3 = st.columns(3)
-with col_c1:
-    respuestas["C1"] = st.checkbox("C1. ¿Involucra Pueblos Indígenas?")
-with col_c2:
-    respuestas["C2"] = st.checkbox("C2. ¿Territorio con conflicto armado o economías ilegales?")
-with col_c3:
-    respuestas["C3"] = st.checkbox("C3. ¿Probabilidad de quejas o conflictos sociales?")
+st.markdown('<div class="pregunta-box">', unsafe_allow_html=True)
+respuestas["A5"] = st.checkbox("A5. ¿El contrato incluye asesoría productiva, agrícola o ambiental que pueda involucrar manejo de plagas, control sanitario, insumos o recomendaciones técnicas en finca o sistemas productivos?")
+st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown('<div class="pregunta-box">', unsafe_allow_html=True)
+respuestas["A6"] = st.checkbox("A6. ¿Existe algún riesgo de seguridad asociado a la ejecución del contrato? (Ej.: zonas con presencia de actores armados, amenazas, estigmatización, economías ilegales, restricciones de movilidad)")
+st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown('<div class="pregunta-box">', unsafe_allow_html=True)
+respuestas["A7"] = st.checkbox("A7. ¿Las actividades podrían coincidir con sitios culturalmente sensibles, como lugares sagrados, cementerios, territorios ancestrales, o existe riesgo de hallazgos arqueológicos o culturales?")
+st.markdown('</div>', unsafe_allow_html=True)
+
+# Sección B - PREGUNTAS EXACTAS DEL DOCUMENTO
+st.subheader("Sección B. Preguntas sobre la persona contratada (Quién ejecuta)")
+
+st.markdown('<div class="pregunta-box">', unsafe_allow_html=True)
+respuestas["B1"] = st.checkbox("B1. ¿La persona contratada pertenece a una comunidad indígena, afrodescendiente, campesina vulnerable o reside en zona de conflicto o alta vulnerabilidad?")
+st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown('<div class="pregunta-box">', unsafe_allow_html=True)
+respuestas["B2"] = st.checkbox("B2. ¿El rol de la persona contratada implica interacciones que puedan generar riesgos de conducta, acoso, violencia basada en género (VBG), explotación o abuso sexual (SEA/SH), especialmente con población en condición de especial vulnerabilidad (mujeres, NNA, víctimas del conflicto, líderes sociales, personas desplazadas)?")
+st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown('<div class="pregunta-box">', unsafe_allow_html=True)
+respuestas["B3"] = st.checkbox("B3. ¿La persona contratada tendrá responsabilidades de custodia, procesamiento, análisis o mediación relacionadas con información sensible o conflictos (más allá de la simple recolección)?")
+st.markdown('</div>', unsafe_allow_html=True)
+
+# Sección C - PREGUNTAS EXACTAS DEL DOCUMENTO
+st.subheader("Sección C. Preguntas sobre los actores involucrados (Con quién se interactúa)")
+
+st.markdown('<div class="pregunta-box">', unsafe_allow_html=True)
+respuestas["C1"] = st.checkbox("C1. ¿Hay Pueblos Indígenas involucrados directa o indirectamente en las actividades del contrato?")
+st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown('<div class="pregunta-box">', unsafe_allow_html=True)
+respuestas["C2"] = st.checkbox("C2. ¿El territorio presenta conflicto armado activo, control territorial, disputas por tierra o presencia de economías ilegales?")
+st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown('<div class="pregunta-box">', unsafe_allow_html=True)
+respuestas["C3"] = st.checkbox("C3. ¿Existe probabilidad de que se presenten quejas, inconformidades o conflictos sociales relacionados con expectativas, beneficios, exclusiones o decisiones del proyecto?")
+st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown("---")
 
@@ -155,8 +189,8 @@ if st.button("🚀 PROCESAR Y GENERAR ANEXO ESS", type="primary", use_container_
             
             # Mostrar preview de cláusulas
             with st.expander("👁️ Ver preview de cláusulas incluidas"):
+                from clauses_library import CLAUSULAS
                 for codigo in clausulas_a_generar:
-                    from clauses_library import CLAUSULAS
                     if codigo in CLAUSULAS:
                         st.write(f"**{CLAUSULAS[codigo]['titulo']}**")
             
