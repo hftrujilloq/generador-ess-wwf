@@ -1,36 +1,58 @@
-from clauses_library import MAPEO_PREGUNTAS, MAPEO_CLAUSULAS
+from clauses_library import MAPEO_PREGUNTAS, MAPEO_CLAUSULAS, ORDEN_ACTIVADORES
 
 class DecisionEngine:
     def __init__(self):
-        self.codigos_activados = set()
+        self.codigos_activados = []
         self.clausulas_finales = []
-    
+
     def evaluar_cuestionario(self, respuestas):
         """
         Procesa las respuestas del cuestionario.
         respuestas: dict con formato {"A1": True, "A2": False, ...}
+        También acepta valores como 'sí', 'si', 'x', 1.
         """
-        self.codigos_activados = set()
-        
-        # Evaluar cada pregunta
-        for pregunta, activado in respuestas.items():
-            if activado and pregunta in MAPEO_PREGUNTAS:
-                codigos = MAPEO_PREGUNTAS[pregunta]
-                self.codigos_activados.update(codigos)
-        
-        # Si no hay ningún código activado, no se aplica ESS
+        activados = set()
+
+        for pregunta, valor in respuestas.items():
+            pregunta = str(pregunta).upper()
+
+            if isinstance(valor, bool):
+                es_si = valor
+            elif isinstance(valor, (int, float)):
+                es_si = bool(valor)
+            elif isinstance(valor, str):
+                es_si = valor.strip().lower() in {"si", "sí", "s", "true", "1", "x", "checked"}
+            else:
+                es_si = False
+
+            if es_si and pregunta in MAPEO_PREGUNTAS:
+                activados.update(MAPEO_PREGUNTAS[pregunta])
+
+        self.codigos_activados = [c for c in ORDEN_ACTIVADORES if c in activados]
+
         if not self.codigos_activados:
+            self.clausulas_finales = []
             return []
-        
-        # Siempre incluir cláusulas base si hay al menos un código
-        clausulas_ids = set(MAPEO_CLAUSULAS["BASE"])
-        
-        # Agregar cláusulas específicas por cada código activado
+
+        clausulas_ids = []
+        vistos = set()
+
+        for clausula in MAPEO_CLAUSULAS["BASE"]:
+            if clausula not in vistos:
+                clausulas_ids.append(clausula)
+                vistos.add(clausula)
+
         for codigo in self.codigos_activados:
-            if codigo in MAPEO_CLAUSULAS:
-                clausulas_ids.update(MAPEO_CLAUSULAS[codigo])
-        
-        return sorted(list(clausulas_ids))
-    
+            for clausula in MAPEO_CLAUSULAS.get(codigo, []):
+                if clausula not in vistos:
+                    clausulas_ids.append(clausula)
+                    vistos.add(clausula)
+
+        self.clausulas_finales = clausulas_ids
+        return self.clausulas_finales
+
     def get_codigos_activados(self):
-        return sorted(list(self.codigos_activados))
+        return self.codigos_activados
+
+    def get_clausulas_finales(self):
+        return self.clausulas_finales
